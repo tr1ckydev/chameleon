@@ -1,4 +1,6 @@
 const fmt = @import("std").fmt;
+const Chameleon = @import("chameleon.zig").Chameleon;
+const Styles = @import("styles.zig").Styles;
 
 pub inline fn wrapStyle(style: [2][]const u8) [2][]const u8 {
     return [_][]const u8{ "\u{001B}[" ++ style[0] ++ "m", "\u{001B}[" ++ style[1] ++ "m" };
@@ -19,5 +21,15 @@ pub fn rgbFromHex(comptime hex: []const u8) [3]u32 {
         (hexInt >> 16) & 0xFF,
         (hexInt >> 8) & 0xFF,
         hexInt & 0xFF,
+    };
+}
+
+pub inline fn getStyle(cham: Chameleon, style_name: []const u8) Chameleon {
+    const style = wrapStyle(@field(Styles, style_name));
+    comptime return .{
+        .level = cham.level,
+        .visible_always = cham.visible_always,
+        .open = cham.open ++ style[0],
+        .close = cham.close ++ style[1],
     };
 }
