@@ -70,4 +70,4 @@ Chameleon supports this standard only in it's **Runtime API** by detecting the p
 
 ## License
 
-This repository uses the MIT License. Check [LICENSE](https://github.com/tr1ckydev/chameleon/blob/main/README.md) for full license text.
+This repository uses the MIT License. Check [LICENSE](https://github.com/tr1ckydev/chameleon/blob/main/LICENSE) for full license text.
