@@ -1,2 +1,2 @@
-zig-*
-.zig-*
+zig-out
+.zig-cache

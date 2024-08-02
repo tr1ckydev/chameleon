@@ -1,8 +1,14 @@
 .{
     .name = "chameleon",
-    .minimum_zig_version = "0.12.0",
-    .version = "0.1.0",
+    .version = "2.0.0",
     .paths = .{
-        "",
+        "src/api/",
+        "src/chameleon.zig",
+        "src/colors.zig",
+        "src/styles.zig",
+        "src/utils.zig",
+        "build.zig",
+        "build.zig.zon",
+        "LICENSE",
     },
 }
