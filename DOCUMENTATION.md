@@ -24,7 +24,7 @@ const std = @import("std");
 const Chameleon = @import("chameleon");
 
 pub fn main() !void {
-    var c = try Chameleon.initRuntime(.{ .allocator = std.heap.your_allocator });
+    var c = Chameleon.initRuntime(.{ .allocator = std.heap.your_allocator });
     defer c.deinit();
 	try c.green().bold().printOut("Hello, world!", .{});
 }
