@@ -25,7 +25,7 @@ pub inline fn printErr(self: *Chameleon, comptime format: []const u8, args: anyt
     try std.io.getStdErr().writer().print(self.fmt(format), args);
 }
 
-inline fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
+pub inline fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
     const style = Utils.wrapStyle(@field(Styles, style_name));
     self.open = self.open ++ style[0];
     self.close = style[1] ++ self.close;
