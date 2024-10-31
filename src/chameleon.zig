@@ -1,6 +1,6 @@
 const std = @import("std");
-const ComptimeChameleon = @import("api/Comptime.zig");
-const RuntimeChameleon = @import("api/Runtime.zig");
+pub const ComptimeChameleon = @import("api/Comptime.zig");
+pub const RuntimeChameleon = @import("api/Runtime.zig");
 pub const HexColors = @import("colors.zig");
 
 pub fn initComptime() ComptimeChameleon {

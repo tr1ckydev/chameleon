@@ -39,7 +39,7 @@ pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !v
     try writer.writeAll(self.close.items);
 }
 
-fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
+pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
     if (!self.no_color) {
         const style = Utils.wrapStyle(@field(Styles, style_name));
         self.open.appendSlice(style[0]) catch {};
