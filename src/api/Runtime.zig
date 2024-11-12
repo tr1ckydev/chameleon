@@ -21,22 +21,22 @@ pub fn fmt(self: *Chameleon, comptime format: []const u8, args: anytype) ![]u8 {
     return if (self.no_color) formatted else std.mem.concat(self.allocator, u8, &.{ self.open.items, formatted, self.close.items });
 }
 
-/// Print the formatted text to stdout.
-pub fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
+/// Print the formatted text to a `File` writer.
+pub fn print(self: *Chameleon, writer: std.fs.File.Writer, comptime format: []const u8, args: anytype) !void {
     defer self.removeAll();
-    const writer = std.io.getStdOut().writer();
     try writer.writeAll(self.open.items);
     try writer.print(format, args);
     try writer.writeAll(self.close.items);
 }
 
+/// Print the formatted text to stdout.
+pub fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
+    return self.print(std.io.getStdOut().writer(), format, args);
+}
+
 /// Print the formatted text to stderr.
 pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    defer self.removeAll();
-    const writer = std.io.getStdErr().writer();
-    try writer.writeAll(self.open.items);
-    try writer.print(format, args);
-    try writer.writeAll(self.close.items);
+    return self.print(std.io.getStdErr().writer(), format, args);
 }
 
 pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
