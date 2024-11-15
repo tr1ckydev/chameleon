@@ -271,3 +271,11 @@ pub inline fn createPreset(self: *Chameleon) Chameleon {
         .preset = true,
     };
 }
+
+test createPreset {
+    comptime var cham = Chameleon{};
+    comptime var preset = cham.bold().green().createPreset();
+    const actual = preset.fmt("foo");
+    const expected = "\u{001B}[1m\u{001B}[32mfoo\u{001B}[39m\u{001B}[22m";
+    try std.testing.expectEqualStrings(expected, actual);
+}

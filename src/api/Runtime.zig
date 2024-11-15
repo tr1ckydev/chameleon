@@ -18,7 +18,12 @@ pub fn deinit(self: *Chameleon) void {
 pub fn fmt(self: *Chameleon, comptime format: []const u8, args: anytype) ![]u8 {
     defer self.removeAll();
     const formatted = try std.fmt.allocPrint(self.allocator, format, args);
-    return if (self.no_color) formatted else std.mem.concat(self.allocator, u8, &.{ self.open.items, formatted, self.close.items });
+    if (self.no_color) {
+        return formatted;
+    } else {
+        defer self.allocator.free(formatted);
+        return std.mem.concat(self.allocator, u8, &.{ self.open.items, formatted, self.close.items });
+    }
 }
 
 /// Print the formatted text to stdout.
@@ -298,4 +303,24 @@ pub inline fn createPreset(self: *Chameleon) !Chameleon {
         .allocator = self.allocator,
         .no_color = self.no_color,
     };
+}
+
+test createPreset {
+    const allocator = std.testing.allocator;
+    var cham = Chameleon{
+        .open = std.ArrayList(u8).init(allocator),
+        .close = std.ArrayList(u8).init(allocator),
+        .allocator = allocator,
+        .no_color = false,
+    };
+    defer cham.deinit();
+
+    var bold_green = try cham.bold().green().createPreset();
+    defer bold_green.deinit();
+
+    const expected = "\u{001B}[1m\u{001B}[32mfoo bar\n\u{001B}[22m\u{001B}[39m";
+    const actual = try bold_green.fmt("foo {s}\n", .{"bar"});
+    defer allocator.free(actual);
+
+    try std.testing.expectEqualSlices(u8, expected, actual);
 }
