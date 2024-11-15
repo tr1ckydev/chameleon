@@ -20,3 +20,7 @@ pub fn initRuntime(config: Config) RuntimeChameleon {
         .no_color = if (!config.detect_no_color) false else std.process.hasEnvVarConstant("NO_COLOR"),
     };
 }
+
+test {
+    std.testing.refAllDecls(@This());
+}

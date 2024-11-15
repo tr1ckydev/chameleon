@@ -24,3 +24,7 @@ pub inline fn rgbFromHex(hex_code: []const u8) [3]u32 {
         hex_int & 0xFF, // blue
     };
 }
+
+test rgbFromHex {
+    try std.testing.expectEqual([_]u32{ 0xFF, 0xAA, 0x00 }, rgbFromHex("FFAA00"));
+}
