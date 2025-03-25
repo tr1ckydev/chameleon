@@ -25,6 +25,10 @@ pub inline fn rgbFromHex(hex_code: []const u8) [3]u32 {
     };
 }
 
+test toString {
+    try std.testing.expectEqual("123", toString(123));
+}
+
 test rgbFromHex {
     try std.testing.expectEqual([_]u32{ 0xFF, 0xAA, 0x00 }, rgbFromHex("FFAA00"));
 }

@@ -31,7 +31,7 @@
 
   ```zig
   const cham = b.dependency("chameleon", .{});
-  exe.root_module.addImport("chameleon", cham.module("chameleon"));
+  exe_mod.addImport("chameleon", cham.module("chameleon"));
   ```
 
 - Import it in your project.

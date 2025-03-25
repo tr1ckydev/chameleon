@@ -4,8 +4,7 @@ const Chameleon = @import("chameleon");
 pub fn main() !void {
     comptime var c = Chameleon.initComptime();
     comptime var header = c.underline().bold().italic().blink().createPreset();
-
-    std.debug.print("\t\t  {s}{s}{s}{s}{s}{s}{s}{s}{s}\n\n", .{
+    std.debug.print("\n\t\t  {s}{s}{s}{s}{s}{s}{s}{s}{s}\n\n", .{
         header.green().fmt("C"),
         header.red().fmt("H"),
         header.blue().fmt("A"),
