@@ -21,6 +21,8 @@
 
 ## Installation
 
+> Chameleon supports only zig **master** branch.
+
 - Install the package.
 
   ```bash
