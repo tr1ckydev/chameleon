@@ -33,7 +33,7 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the example");
     run_step.dependOn(&run_cmd.step);
 
-    const tests = b.addTest(.{ .root_source_file = b.path("src/chameleon.zig") });
+    const tests = b.addTest(.{ .root_module = cham_mod });
     const run_tests = b.addRunArtifact(tests);
     run_tests.step.dependOn(&tests.step);
     const run_tests_step = b.step("test", "Run tests");

@@ -2,7 +2,7 @@
     .name = .chameleon,
     .version = "2.0.1",
     .fingerprint = 0x3f13cb6e8d5aec64, // Changing this has security and trust implications.
-    .minimum_zig_version = "0.15.0-dev.97+677b2d62e",
+    .minimum_zig_version = "0.15.0-dev.1228+6dbcc3bd5",
     .paths = .{
         "build.zig",
         "build.zig.zon",
