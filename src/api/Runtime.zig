@@ -26,8 +26,8 @@ pub fn fmt(self: *Chameleon, comptime format: []const u8, args: anytype) ![]u8 {
     }
 }
 
-/// Print the formatted text to a `File` writer.
-pub fn print(self: *Chameleon, writer: std.fs.File.Writer, comptime format: []const u8, args: anytype) !void {
+/// Print the formatted text to an `Io` writer.
+pub fn print(self: *Chameleon, writer: std.Io.Writer, comptime format: []const u8, args: anytype) !void {
     defer self.removeAll();
     try writer.writeAll(self.open.items);
     try writer.print(format, args);
@@ -36,12 +36,12 @@ pub fn print(self: *Chameleon, writer: std.fs.File.Writer, comptime format: []co
 
 /// Print the formatted text to stdout.
 pub fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdOut().writer(), format, args);
+    return self.print(std.fs.File.stdout().writer(&.{}), format, args);
 }
 
 /// Print the formatted text to stderr.
 pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdErr().writer(), format, args);
+    return self.print(std.fs.File.stderr().writer(&.{}), format, args);
 }
 
 pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {

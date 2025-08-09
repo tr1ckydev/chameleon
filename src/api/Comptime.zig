@@ -13,20 +13,20 @@ pub inline fn fmt(self: *Chameleon, comptime text: []const u8) []const u8 {
     return self.open ++ text ++ self.close;
 }
 
-/// Print the formatted text to a `File` writer.
-pub inline fn print(self: *Chameleon, writer: std.fs.File.Writer, comptime text: []const u8, args: anytype) !void {
+/// Print the formatted text to an `Io` writer.
+pub inline fn print(self: *Chameleon, writer: std.Io.Writer, comptime text: []const u8, args: anytype) !void {
     defer self.removeAll();
     try writer.print(self.fmt(text), args);
 }
 
 /// Print the formatted text to stdout.
 pub inline fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdOut().writer(), format, args);
+    return self.print(std.fs.File.stdout().writer(&.{}), format, args);
 }
 
 /// Print the formatted text to stderr.
 pub inline fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdErr().writer(), format, args);
+    return self.print(std.fs.File.stderr().writer(&.{}), format, args);
 }
 
 pub inline fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
