@@ -34,14 +34,22 @@ pub fn print(self: *Chameleon, writer: std.Io.Writer, comptime format: []const u
     try writer.writeAll(self.close.items);
 }
 
+/// Print the formatted text to a `File`.
+pub inline fn printToFile(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
+    var buf: [1024]u8 = undefined;
+    var writer = file.writer(&buf);
+    try self.print(&writer.interface, format, args);
+    return writer.interface.flush();
+}
+
 /// Print the formatted text to stdout.
 pub fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.fs.File.stdout().writer(&.{}), format, args);
+    return self.print(.stdout(), format, args);
 }
 
 /// Print the formatted text to stderr.
 pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.fs.File.stderr().writer(&.{}), format, args);
+    return self.print(.stderr(), format, args);
 }
 
 pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
