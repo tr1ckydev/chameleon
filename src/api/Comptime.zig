@@ -14,19 +14,27 @@ pub inline fn fmt(self: *Chameleon, comptime text: []const u8) []const u8 {
 }
 
 /// Print the formatted text to a `File` writer.
-pub inline fn print(self: *Chameleon, writer: std.fs.File.Writer, comptime text: []const u8, args: anytype) !void {
+pub inline fn print(self: *Chameleon, writer: *std.Io.Writer, comptime text: []const u8, args: anytype) !void {
     defer self.removeAll();
     try writer.print(self.fmt(text), args);
 }
 
+/// Print the formatted text to a `File` writer.
+pub inline fn printFile(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
+    var buf: [1024]u8 = undefined;
+    var writer = file.writer(&buf);
+    try self.print(&writer.interface, format, args);
+    try writer.interface.flush();
+}
+
 /// Print the formatted text to stdout.
 pub inline fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdOut().writer(), format, args);
+    return self.print(.stdout(), format, args);
 }
 
 /// Print the formatted text to stderr.
 pub inline fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.print(std.io.getStdErr().writer(), format, args);
+    return self.print(.stderr(), format, args);
 }
 
 pub inline fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
