@@ -3,15 +3,15 @@ const Styles = @import("../styles.zig");
 const Utils = @import("../utils.zig");
 const Chameleon = @This();
 
-open: std.ArrayList(u8),
-close: std.ArrayList(u8),
+open: std.ArrayList(u8) = .empty,
+close: std.ArrayList(u8) = .empty,
 preset: bool = false,
 allocator: std.mem.Allocator,
 no_color: bool,
 
 pub fn deinit(self: *Chameleon) void {
-    self.open.deinit();
-    self.close.deinit();
+    self.open.deinit(self.allocator);
+    self.close.deinit(self.allocator);
 }
 
 /// Returns the formatted text.
@@ -55,16 +55,16 @@ pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !v
 pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
     if (!self.no_color) {
         const style = Utils.wrapStyle(@field(Styles, style_name));
-        self.open.appendSlice(style[0]) catch {};
-        self.close.appendSlice(style[1]) catch {};
+        self.open.appendSlice(self.allocator, style[0]) catch {};
+        self.close.appendSlice(self.allocator, style[1]) catch {};
     }
     return self;
 }
 
 fn removeAll(self: *Chameleon) void {
     if (self.preset) return;
-    self.open.clearAndFree();
-    self.close.clearAndFree();
+    self.open.clearAndFree(self.allocator);
+    self.close.clearAndFree(self.allocator);
 }
 
 pub fn reset(self: *Chameleon) *Chameleon {
@@ -258,8 +258,8 @@ pub fn bgWhiteBright(self: *Chameleon) *Chameleon {
 /// Set the foreground color to the rgb color values.
 pub fn rgb(self: *Chameleon, comptime r: u8, comptime g: u8, comptime b: u8) *Chameleon {
     if (!self.no_color) {
-        self.open.appendSlice(Utils.wrapAnsi16m(false, r, g, b)) catch {};
-        self.close.appendSlice("\u{001B}[39m") catch {};
+        self.open.appendSlice(self.allocator, Utils.wrapAnsi16m(false, r, g, b)) catch {};
+        self.close.appendSlice(self.allocator, "\u{001B}[39m") catch {};
     }
     return self;
 }
@@ -267,8 +267,8 @@ pub fn rgb(self: *Chameleon, comptime r: u8, comptime g: u8, comptime b: u8) *Ch
 /// Set the background color to the rgb color values.
 pub fn bgRgb(self: *Chameleon, comptime r: u8, comptime g: u8, comptime b: u8) *Chameleon {
     if (!self.no_color) {
-        self.open.appendSlice(Utils.wrapAnsi16m(true, r, g, b)) catch {};
-        self.close.appendSlice("\u{001B}[49m") catch {};
+        self.open.appendSlice(self.allocator, Utils.wrapAnsi16m(true, r, g, b)) catch {};
+        self.close.appendSlice(self.allocator, "\u{001B}[49m") catch {};
     }
     return self;
 }
@@ -305,8 +305,8 @@ pub fn bgHex(self: *Chameleon, comptime hex_code: []const u8) *Chameleon {
 pub inline fn createPreset(self: *Chameleon) !Chameleon {
     defer self.removeAll();
     return .{
-        .open = try self.open.clone(),
-        .close = try self.close.clone(),
+        .open = try self.open.clone(self.allocator),
+        .close = try self.close.clone(self.allocator),
         .preset = true,
         .allocator = self.allocator,
         .no_color = self.no_color,
@@ -316,8 +316,6 @@ pub inline fn createPreset(self: *Chameleon) !Chameleon {
 test createPreset {
     const allocator = std.testing.allocator;
     var cham = Chameleon{
-        .open = std.ArrayList(u8).init(allocator),
-        .close = std.ArrayList(u8).init(allocator),
         .allocator = allocator,
         .no_color = false,
     };

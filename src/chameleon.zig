@@ -14,8 +14,6 @@ const Config = struct {
 
 pub fn initRuntime(config: Config) RuntimeChameleon {
     return .{
-        .open = std.ArrayList(u8).init(config.allocator),
-        .close = std.ArrayList(u8).init(config.allocator),
         .allocator = config.allocator,
         .no_color = if (!config.detect_no_color) false else std.process.hasEnvVarConstant("NO_COLOR"),
     };
