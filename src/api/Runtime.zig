@@ -34,10 +34,27 @@ pub fn print(self: *Chameleon, writer: *std.Io.Writer, comptime format: []const 
     try writer.writeAll(self.close.items);
 }
 
-/// Print the formatted text to a `File` writer.
-pub fn printFile(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
+/// Print the formatted text to a buffered `File` writer.
+pub fn printFileBuffered(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
     var buf: [1024]u8 = undefined;
     var writer = file.writer(&buf);
+    try self.print(&writer.interface, format, args);
+    try writer.interface.flush();
+}
+
+/// Print the formatted text to buffered stdout.
+pub fn printOutBuffered(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
+    return self.printFile(.stdout(), format, args);
+}
+
+/// Print the formatted text to buffered stderr.
+pub fn printErrBuffered(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
+    return self.printFile(.stderr(), format, args);
+}
+
+/// Print the formatted text to a `File` writer.
+pub fn printFile(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
+    var writer = file.writer(&.{});
     try self.print(&writer.interface, format, args);
     try writer.interface.flush();
 }
