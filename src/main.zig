@@ -1,7 +1,7 @@
 const std = @import("std");
 const Chameleon = @import("chameleon");
 
-pub fn main() !void {
+pub fn main(_: std.process.Init) !void {
     comptime var c = Chameleon.initComptime();
     comptime var header = c.underline().bold().italic().blink().createPreset();
     std.debug.print("\n\t\t  {s}{s}{s}{s}{s}{s}{s}{s}{s}\n\n", .{

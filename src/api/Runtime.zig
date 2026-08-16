@@ -35,38 +35,38 @@ pub fn print(self: *Chameleon, writer: *std.Io.Writer, comptime format: []const 
 }
 
 /// Print the formatted text to a buffered `File` writer.
-pub fn printFileBuffered(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
+pub fn printFileBuffered(self: *Chameleon, io: std.Io, file: std.Io.File, comptime format: []const u8, args: anytype) !void {
     var buf: [1024]u8 = undefined;
-    var writer = file.writer(&buf);
+    var writer = file.writer(io, &buf);
     try self.print(&writer.interface, format, args);
     try writer.interface.flush();
 }
 
 /// Print the formatted text to buffered stdout.
-pub fn printOutBuffered(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.printFile(.stdout(), format, args);
+pub fn printOutBuffered(self: *Chameleon, io: std.Io, comptime format: []const u8, args: anytype) !void {
+    return self.printFileBuffered(io, .stdout(), format, args);
 }
 
 /// Print the formatted text to buffered stderr.
-pub fn printErrBuffered(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.printFile(.stderr(), format, args);
+pub fn printErrBuffered(self: *Chameleon, io: std.Io, comptime format: []const u8, args: anytype) !void {
+    return self.printFileBuffered(io, .stderr(), format, args);
 }
 
 /// Print the formatted text to a `File` writer.
-pub fn printFile(self: *Chameleon, file: std.fs.File, comptime format: []const u8, args: anytype) !void {
-    var writer = file.writer(&.{});
+pub fn printFile(self: *Chameleon, io: std.Io, file: std.Io.File, comptime format: []const u8, args: anytype) !void {
+    var writer = file.writer(io, &.{});
     try self.print(&writer.interface, format, args);
     try writer.interface.flush();
 }
 
 /// Print the formatted text to stdout.
-pub fn printOut(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.printFile(.stdout(), format, args);
+pub fn printOut(self: *Chameleon, io: std.Io, comptime format: []const u8, args: anytype) !void {
+    return self.printFile(io, .stdout(), format, args);
 }
 
 /// Print the formatted text to stderr.
-pub fn printErr(self: *Chameleon, comptime format: []const u8, args: anytype) !void {
-    return self.printFile(.stderr(), format, args);
+pub fn printErr(self: *Chameleon, io: std.Io, comptime format: []const u8, args: anytype) !void {
+    return self.printFile(io, .stderr(), format, args);
 }
 
 pub fn addStyle(self: *Chameleon, comptime style_name: []const u8) *Chameleon {
